@@ -22,6 +22,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { AuthProvider } from "@/context/AuthContext";
+
 export default function RootLayout({
   children,
 }: {
@@ -33,7 +35,9 @@ export default function RootLayout({
         className={`${hindSiliguri.variable} font-sans min-h-full flex flex-col bg-slate-950 text-slate-100`}
         suppressHydrationWarning
       >
-        <AppShell>{children}</AppShell>
+        <AuthProvider>
+          <AppShell>{children}</AppShell>
+        </AuthProvider>
       </body>
     </html>
   );

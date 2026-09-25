@@ -15,7 +15,9 @@ import {
   Globe2,
   ChevronRight,
   Sparkles,
+  LogOut,
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -42,6 +44,7 @@ const NAV_ITEMS: NavItem[] = [
 
 export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
 
   return (
     <>
@@ -134,22 +137,47 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
             })}
           </nav>
 
-          {/* Founder Footer Info */}
-          <div className="p-4 m-3 rounded-2xl bg-gradient-to-b from-slate-900/80 to-slate-950 border border-slate-800/90 shadow-inner">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-500/20 text-indigo-400 font-bold border border-indigo-500/30 text-xs">
-                AH
+          {/* Authenticated User / Admin Footer Info */}
+          <div className="p-3.5 m-3 rounded-2xl bg-gradient-to-b from-slate-900/90 to-slate-950 border border-slate-800/90 shadow-inner">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2.5 min-w-0">
+                {user?.photoURL ? (
+                  <img
+                    src={user.photoURL}
+                    alt={user.displayName || "User"}
+                    className="h-8 w-8 rounded-full object-cover ring-1 ring-sky-500/40 shrink-0"
+                  />
+                ) : (
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-sky-500 via-indigo-500 to-purple-600 text-white font-bold text-xs shadow">
+                    {user?.displayName?.substring(0, 2).toUpperCase() || "AH"}
+                  </div>
+                )}
+                <div className="truncate">
+                  <p className="text-xs font-semibold text-white truncate">
+                    {user?.displayName || "Md. Aulad Hossen"}
+                  </p>
+                  <p className="text-[10px] text-slate-400 truncate">
+                    {user?.email || "aulad@itsolution.com"}
+                  </p>
+                </div>
               </div>
-              <div className="truncate">
-                <p className="text-xs font-semibold text-white">Md. Aulad Hossen</p>
-                <p className="text-[11px] text-slate-400">Founder & Fullstack Dev</p>
-              </div>
+
+              <button
+                type="button"
+                onClick={() => logout()}
+                title="লগআউট"
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-rose-500/20 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 hover:border-rose-500/40 transition active:scale-95"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+              </button>
             </div>
-            <div className="mt-3 pt-3 border-t border-slate-800/70 flex items-center justify-between text-[11px] text-slate-400">
-              <span className="flex items-center gap-1 text-emerald-400">
-                <Sparkles className="h-3 w-3" /> System Live
+
+            <div className="mt-2.5 pt-2.5 border-t border-slate-800/70 flex items-center justify-between text-[10px] text-slate-400">
+              <span className="flex items-center gap-1 text-emerald-400 font-medium">
+                <Sparkles className="h-3 w-3" />
+                {user?.isDemo ? "ডেমো অ্যাডমিন" : "Firebase সেশন"}
               </span>
-              <span>Next.js 16 + Atlas</span>
+              <span>Next.js 16</span>
             </div>
           </div>
         </div>

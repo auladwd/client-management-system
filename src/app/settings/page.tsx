@@ -16,7 +16,11 @@ import {
   RefreshCw,
   Sparkles,
   AlertCircle,
+  User,
+  LogOut,
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import AdminPermissionsCard from "@/components/AdminPermissionsCard";
 
 interface DbStatus {
   success: boolean;
@@ -36,6 +40,7 @@ interface DbStatus {
 }
 
 export default function SettingsPage() {
+  const { user, isConfigured, logout } = useAuth();
   const [copiedEnv, setCopiedEnv] = useState(false);
   const [dbStatus, setDbStatus] = useState<DbStatus | null>(null);
   const [testingDb, setTestingDb] = useState(false);
@@ -229,6 +234,78 @@ WHATSAPP_API_TOKEN="optional_token"
           </div>
         )}
       </div>
+
+      {/* Firebase Authentication Live Card */}
+      <div className="rounded-2xl border border-slate-800 bg-gradient-to-r from-slate-900 via-slate-900 to-amber-950/20 p-5 sm:p-6 backdrop-blur-xl shadow-xl space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              <Flame className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+                <span>Firebase Authentication স্ট্যাটাস</span>
+                {isConfigured ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-[11px] font-medium text-emerald-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    SDK সক্রিয়
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 text-[11px] font-medium text-amber-400">
+                    ডেমো / কী সেটআপ আবশ্যক
+                  </span>
+                )}
+              </h2>
+              <p className="text-xs text-slate-400">
+                Google Sign-In এবং Email/Password ভিত্তিক সিকিউর অ্যাডমিন অথেনটিকেশন
+              </p>
+            </div>
+          </div>
+
+          {user && (
+            <button
+              onClick={() => logout()}
+              className="flex items-center gap-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3.5 py-2 text-xs font-semibold text-rose-400 hover:bg-rose-500/20 transition active:scale-95 shrink-0"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              <span>লগআউট করুন</span>
+            </button>
+          )}
+        </div>
+
+        {/* User details & Auth mode */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+          <div className="rounded-xl bg-slate-950/70 border border-slate-800 p-3">
+            <p className="text-[10px] text-slate-400">বর্তমান লগইনকৃত ইউজার</p>
+            <p className="text-xs font-semibold text-white mt-1 truncate">
+              {user?.displayName || "লগইন নেই"}
+            </p>
+            <p className="text-[11px] text-slate-400 truncate">{user?.email || "—"}</p>
+          </div>
+
+          <div className="rounded-xl bg-slate-950/70 border border-slate-800 p-3">
+            <p className="text-[10px] text-slate-400">অথেনটিকেশন মোড</p>
+            <p className="text-xs font-semibold text-sky-400 mt-1">
+              {user?.isDemo ? "টেস্ট / ডেমো অ্যাডমিন" : "Firebase লাইভ সেশন"}
+            </p>
+            <p className="text-[11px] text-slate-400">
+              {user?.isDemo ? "লোকাল সেশন" : `UID: ${user?.uid.substring(0, 12)}...`}
+            </p>
+          </div>
+
+          <div className="rounded-xl bg-slate-950/70 border border-slate-800 p-3">
+            <p className="text-[10px] text-slate-400">প্রোটেকশন স্ট্যাটাস</p>
+            <p className="text-xs font-semibold text-emerald-400 mt-1 flex items-center gap-1">
+              <ShieldCheck className="h-3.5 w-3.5" />
+              <span>রুট গার্ড সক্রিয়</span>
+            </p>
+            <p className="text-[11px] text-slate-400">লগইন ছাড়া অন্য কোনো পেজ এক্সেসিবল নয়</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Admin Permissions & Allowed Emails Management */}
+      <AdminPermissionsCard />
 
       {/* Status Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
