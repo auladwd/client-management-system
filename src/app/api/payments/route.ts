@@ -50,10 +50,14 @@ export async function POST(request: Request) {
     if (mongoose) {
       let record = await Payment.findOne({ clientId });
       if (!record) {
-        const inv = `INV-${new Date().getFullYear()}-${String(await Payment.countDocuments() + 1).padStart(3, "0")}`;
+        const invCount = await Payment.countDocuments();
+        let inv = `INV-${new Date().getFullYear()}-${String(invCount + 1).padStart(3, "0")}`;
+        if (await Payment.findOne({ invoiceNumber: inv })) {
+          inv = `INV-${new Date().getFullYear()}-${String(invCount + 1).padStart(3, "0")}-${Math.floor(1000 + Math.random() * 9000)}`;
+        }
         record = new Payment({
           clientId,
-          clientName,
+          clientName: clientName || "Client App",
           invoiceNumber: inv,
           totalAmount: totalAmount || 20000,
           paidAmount: 0,

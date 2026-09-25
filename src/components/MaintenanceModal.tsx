@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Wrench, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { MockMaintenance } from "@/lib/store";
 
@@ -30,6 +30,21 @@ export default function MaintenanceModal({
   );
   const [solutionNotes, setSolutionNotes] = useState(ticketToEdit?.solutionNotes || "");
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (ticketToEdit) {
+      setClientId(ticketToEdit.clientId);
+      setIssueTitle(ticketToEdit.issueTitle);
+      setDescription(ticketToEdit.description || "");
+      setSeverity(ticketToEdit.severity);
+      setStatus(ticketToEdit.status);
+      setSolutionNotes(ticketToEdit.solutionNotes || "");
+    } else {
+      if (clients.length > 0 && !clientId) {
+        setClientId(clients[0]._id);
+      }
+    }
+  }, [isOpen, ticketToEdit, clients, clientId]);
 
   if (!isOpen) return null;
 
@@ -76,7 +91,7 @@ export default function MaintenanceModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
       <div className="relative w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <div className="flex items-center gap-2">

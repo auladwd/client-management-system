@@ -71,13 +71,17 @@ export async function POST(request: Request) {
       cleanWa = "88" + cleanWa;
     }
 
-    const code =
-      repCode ||
-      `REP-${district.slice(0, 3).toUpperCase()}-${String(store.representatives.length + 1).padStart(2, "0")}`;
-
     const mongoose = await connectToDatabase();
 
     if (mongoose) {
+      const repCount = await Representative.countDocuments({ district });
+      let code =
+        repCode ||
+        `REP-${district.slice(0, 3).toUpperCase()}-${String(repCount + 1).padStart(2, "0")}`;
+      if (await Representative.findOne({ repCode: code })) {
+        code = `REP-${district.slice(0, 3).toUpperCase()}-${String(repCount + 1).padStart(2, "0")}-${Math.floor(100 + Math.random() * 900)}`;
+      }
+
       const rep = await Representative.create({
         name,
         phone,
@@ -96,6 +100,10 @@ export async function POST(request: Request) {
       });
       return NextResponse.json({ success: true, data: rep });
     }
+
+    const code =
+      repCode ||
+      `REP-${district.slice(0, 3).toUpperCase()}-${String(store.representatives.length + 1).padStart(2, "0")}`;
 
     const newRep = {
       _id: `rep-${Date.now()}`,
@@ -123,6 +131,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, data: newRep });
   } catch (error) {
     console.error("POST /api/representatives error:", error);
+    return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+    if (!id) {
+      return NextResponse.json({ success: false, error: "Representative ID is required" }, { status: 400 });
+    }
+
+    const mongoose = await connectToDatabase();
+    if (mongoose) {
+      await Representative.findByIdAndDelete(id);
+      return NextResponse.json({ success: true, message: "Representative deleted" });
+    }
+
+    store.representatives = store.representatives.filter((r) => r._id !== id);
+    return NextResponse.json({ success: true, message: "Representative deleted" });
+  } catch (error) {
+    console.error("DELETE /api/representatives error:", error);
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
 }

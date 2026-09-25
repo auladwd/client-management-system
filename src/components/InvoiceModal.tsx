@@ -68,7 +68,7 @@ export default function InvoiceModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
       <div className="relative w-full max-w-3xl rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl text-slate-100">
         {/* Top Controls (Hidden during print) */}
         <div className="no-print flex items-center justify-between border-b border-slate-800 pb-4 mb-4">

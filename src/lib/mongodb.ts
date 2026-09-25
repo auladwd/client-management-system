@@ -55,8 +55,15 @@ export async function connectToDatabase(): Promise<typeof mongoose | null> {
     cached.conn = await cached.promise;
   } catch (e) {
     cached.promise = null;
-    console.error("Failed to connect to MongoDB Atlas:", e);
-    return null;
+    // Retry once with explicit Google DNS in case of local router SRV blocking
+    try {
+      dns.setServers(["8.8.8.8", "1.1.1.1", "8.8.4.4"]);
+      cached.conn = await mongoose.connect(MONGODB_URI, { bufferCommands: false });
+      return cached.conn;
+    } catch (retryErr) {
+      console.error("Failed to connect to MongoDB Atlas after retry:", retryErr);
+      return null;
+    }
   }
 
   return cached.conn;

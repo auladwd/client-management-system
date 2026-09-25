@@ -505,3 +505,11 @@ if (!global.globalAuladStore) {
 }
 
 export const store = global.globalAuladStore;
+export {
+  initialClients,
+  initialVaults,
+  initialPayments,
+  initialMaintenance,
+  initialRepresentatives,
+  initialBroadcasts,
+};

@@ -97,18 +97,18 @@ export async function POST(request: Request) {
     if (mongoose) {
       const client = await Client.create({
         name,
-        ownerName,
+        ownerName: ownerName || name,
         phone,
         email,
-        division,
-        district,
-        upazila,
+        division: division || "Dhaka",
+        district: district || "Dhaka",
+        upazila: upazila || "Savar",
         appType,
         vercelUrl,
-        customDomain,
-        githubRepo,
-        notes,
-        assignedRepCode,
+        customDomain: customDomain || "",
+        githubRepo: githubRepo || "",
+        notes: notes || "",
+        assignedRepCode: assignedRepCode || "",
         status: "in_progress",
       });
 
@@ -137,7 +137,10 @@ export async function POST(request: Request) {
       const tot = Number(totalAmount) || 20000;
       const adv = Number(advanceAmount) || 0;
       const invCount = await Payment.countDocuments();
-      const invNumber = `INV-${new Date().getFullYear()}-${String(invCount + 1).padStart(3, "0")}`;
+      let invNumber = `INV-${new Date().getFullYear()}-${String(invCount + 1).padStart(3, "0")}`;
+      if (await Payment.findOne({ invoiceNumber: invNumber })) {
+        invNumber = `INV-${new Date().getFullYear()}-${String(invCount + 1).padStart(3, "0")}-${Math.floor(1000 + Math.random() * 9000)}`;
+      }
 
       await Payment.create({
         clientId: client._id.toString(),

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Settings,
   Database,
@@ -12,10 +12,87 @@ import {
   Check,
   ShieldCheck,
   Globe2,
+  Activity,
+  RefreshCw,
+  Sparkles,
+  AlertCircle,
 } from "lucide-react";
+
+interface DbStatus {
+  success: boolean;
+  status: string;
+  latencyMs?: number;
+  database?: string;
+  ping?: string;
+  collections?: {
+    clients: number;
+    credentialVaults: number;
+    payments: number;
+    representatives: number;
+    maintenanceLogs: number;
+    broadcasts: number;
+  };
+  error?: string;
+}
 
 export default function SettingsPage() {
   const [copiedEnv, setCopiedEnv] = useState(false);
+  const [dbStatus, setDbStatus] = useState<DbStatus | null>(null);
+  const [testingDb, setTestingDb] = useState(false);
+  const [seedingDb, setSeedingDb] = useState(false);
+  const [seedMessage, setSeedMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    checkDbStatus();
+  }, []);
+
+  async function checkDbStatus() {
+    setTestingDb(true);
+    try {
+      const res = await fetch("/api/system");
+      const json = await res.json();
+      setDbStatus(json);
+    } catch (e) {
+      setDbStatus({
+        success: false,
+        status: "error",
+        error: e instanceof Error ? e.message : "Failed to fetch status",
+      });
+    } finally {
+      setTestingDb(false);
+    }
+  }
+
+  async function handleSeed() {
+    if (
+      !confirm(
+        "আপনি কি MongoDB Atlas এ প্রাথমিক ডেমো রেকর্ডগুলো (ক্লায়েন্ট, পেমেন্ট, প্রতিনিধি ও ভল্ট) লোড করতে চান?"
+      )
+    ) {
+      return;
+    }
+
+    setSeedingDb(true);
+    setSeedMessage(null);
+    try {
+      const res = await fetch("/api/system", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "seed" }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setSeedMessage("প্রাথমিক ডেটা সফলভাবে MongoDB Atlas এ যুক্ত হয়েছে!");
+        await checkDbStatus();
+      } else {
+        setSeedMessage(json.error || "ডেটা লোড করতে সমস্যা হয়েছে");
+      }
+    } catch (e) {
+      setSeedMessage("সার্ভারে সংযোগে সমস্যা হয়েছে");
+    } finally {
+      setSeedingDb(false);
+    }
+  }
 
   const envTemplate = `# ===============================================
 # Aulad IT Solution - Business Management Portal
@@ -60,8 +137,97 @@ WHATSAPP_API_TOKEN="optional_token"
           সিস্টেম সেটিংস ও সার্ভিস কনফিগারেশন
         </h1>
         <p className="text-xs text-slate-400">
-          MongoDB Atlas, Firebase, Cloudinary এবং AES-256 সিকিউরিটি কনফিগারেশন গাইড
+          MongoDB Atlas, Firebase, Cloudinary এবং AES-256 সিকিউরিটি কনফিগারেশন ও লাইভ ডাটাবেজ ডায়াগনস্টিক
         </p>
+      </div>
+
+      {/* Live MongoDB Atlas Diagnostic Card */}
+      <div className="rounded-2xl border border-slate-800 bg-gradient-to-r from-slate-900 via-slate-900 to-indigo-950/40 p-5 sm:p-6 backdrop-blur-xl shadow-xl space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <Database className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+                <span>MongoDB Atlas লাইভ কানেকশন স্ট্যাটাস</span>
+                {dbStatus?.status === "connected" ? (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-[11px] font-medium text-emerald-400">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    সক্রিয় ও সংযুক্ত (Connected)
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 text-[11px] font-medium text-amber-400">
+                    চেক করা হচ্ছে...
+                  </span>
+                )}
+              </h2>
+              <p className="text-xs text-slate-400">
+                ক্লাউড ডাটাবেজ: <span className="font-mono text-slate-300">{dbStatus?.database || "aulad_it_management"}</span>
+                {dbStatus?.latencyMs !== undefined && (
+                  <span className="ml-2 font-mono text-emerald-400">| লেটেন্সি: {dbStatus.latencyMs}ms</span>
+                )}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-wrap">
+            <button
+              onClick={checkDbStatus}
+              disabled={testingDb}
+              className="flex items-center gap-1.5 rounded-xl border border-sky-500/30 bg-sky-500/10 px-3.5 py-2 text-xs font-semibold text-sky-400 hover:bg-sky-500/20 transition active:scale-95 disabled:opacity-50"
+            >
+              <RefreshCw className={`h-3.5 w-3.5 ${testingDb ? "animate-spin" : ""}`} />
+              <span>{testingDb ? "যাচাই হচ্ছে..." : "পুনরায় টেস্ট করুন"}</span>
+            </button>
+
+            <button
+              onClick={handleSeed}
+              disabled={seedingDb}
+              className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-3.5 py-2 text-xs font-semibold text-white shadow-lg shadow-emerald-500/20 hover:opacity-90 transition active:scale-95 disabled:opacity-50"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>{seedingDb ? "সিড হচ্ছে..." : "প্রাথমিক ডেটা লোড করুন"}</span>
+            </button>
+          </div>
+        </div>
+
+        {seedMessage && (
+          <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-300 flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
+            <span>{seedMessage}</span>
+          </div>
+        )}
+
+        {/* Collections Overview */}
+        {dbStatus?.collections && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 pt-1">
+            <div className="rounded-xl bg-slate-950/70 border border-slate-800 p-2.5 text-center">
+              <p className="text-[10px] text-slate-400">ক্লায়েন্ট রেকর্ড</p>
+              <p className="text-base font-bold text-white mt-0.5">{dbStatus.collections.clients}</p>
+            </div>
+            <div className="rounded-xl bg-slate-950/70 border border-slate-800 p-2.5 text-center">
+              <p className="text-[10px] text-slate-400">পেমেন্ট ও ইনভয়েস</p>
+              <p className="text-base font-bold text-emerald-400 mt-0.5">{dbStatus.collections.payments}</p>
+            </div>
+            <div className="rounded-xl bg-slate-950/70 border border-slate-800 p-2.5 text-center">
+              <p className="text-[10px] text-slate-400">প্রতিনিধি (Reps)</p>
+              <p className="text-base font-bold text-purple-400 mt-0.5">{dbStatus.collections.representatives}</p>
+            </div>
+            <div className="rounded-xl bg-slate-950/70 border border-slate-800 p-2.5 text-center">
+              <p className="text-[10px] text-slate-400">ক্রেডেনশিয়াল ভল্ট</p>
+              <p className="text-base font-bold text-sky-400 mt-0.5">{dbStatus.collections.credentialVaults}</p>
+            </div>
+            <div className="rounded-xl bg-slate-950/70 border border-slate-800 p-2.5 text-center">
+              <p className="text-[10px] text-slate-400">মেইনটেন্যান্স লগ</p>
+              <p className="text-base font-bold text-amber-400 mt-0.5">{dbStatus.collections.maintenanceLogs}</p>
+            </div>
+            <div className="rounded-xl bg-slate-950/70 border border-slate-800 p-2.5 text-center">
+              <p className="text-[10px] text-slate-400">ব্রডকাস্ট নোটিশ</p>
+              <p className="text-base font-bold text-rose-400 mt-0.5">{dbStatus.collections.broadcasts}</p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Status Overview */}
@@ -72,7 +238,7 @@ WHATSAPP_API_TOKEN="optional_token"
             <Database className="h-4 w-4 text-sky-400" />
           </div>
           <p className="text-xs text-slate-400">
-            MongoDB Atlas + In-Memory Fallback
+            MongoDB Atlas + Mongoose ODM
           </p>
           <div className="inline-flex items-center gap-1 text-[11px] text-emerald-400">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -94,7 +260,7 @@ WHATSAPP_API_TOKEN="optional_token"
 
         <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4 backdrop-blur-xl space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-300">হোস্টিং ও ডেপ্লয়মেন্ট</span>
+            <span className="text-xs font-semibold text-slate-300">হোস্টিং ও আর্কিটেকচার</span>
             <Globe2 className="h-4 w-4 text-purple-400" />
           </div>
           <p className="text-xs text-slate-400">Vercel Edge & Serverless</p>
@@ -111,10 +277,10 @@ WHATSAPP_API_TOKEN="optional_token"
           <div>
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
               <ShieldCheck className="h-5 w-5 text-sky-400" />
-              প্রোডাকশন এনভায়রনমেন্ট ভ্যারিয়েবল (.env.local) সেটআপ
+              প্রোডাকশন এনভায়রনমেন্ট ভ্যারিয়েবল (.env.local) রেফারেন্স
             </h3>
             <p className="text-xs text-slate-400 mt-0.5">
-              প্রজেক্ট রুটে <code>.env.local</code> ফাইলে আপনার আসল কী-গুলো বসিয়ে সেভ করুন
+              প্রজেক্ট রুটে <code className="text-sky-300">.env.local</code> ফাইলে আপনার আসল কী-গুলো কনফিগার করা আছে
             </p>
           </div>
 
@@ -137,14 +303,14 @@ WHATSAPP_API_TOKEN="optional_token"
           <div className="rounded-xl bg-slate-950 p-4 border border-slate-800 space-y-1.5">
             <h4 className="font-bold text-sky-400">🍃 MongoDB Atlas কানেকশন:</h4>
             <p className="text-slate-400 text-[11px] leading-relaxed">
-              MongoDB Atlas এ লগইন করে একটি ফ্রি ক্লাস্টার তৈরি করুন। তারপর &quot;Connect&quot; $\rightarrow$ &quot;Drivers&quot; এ গিয়ে কানেকশন স্ট্রিংটি কপি করে <code>MONGODB_URI</code> তে পেস্ট করুন। সাথে সাথে আপনার ডেটা সরাসরি Atlas ক্লাউডে জমা হতে শুরু করবে।
+              MongoDB Atlas এ <code className="text-slate-300">aulad_it_management</code> ক্লাস্টারে প্রতিটি ক্লায়েন্ট, এনক্রিপ্টেড ক্রেডেনশিয়াল, ইনভয়েস এবং টিকিট সরাসরি সিঙ্ক হয়।
             </p>
           </div>
 
           <div className="rounded-xl bg-slate-950 p-4 border border-slate-800 space-y-1.5">
             <h4 className="font-bold text-emerald-400">🔐 ক্রেডেনশিয়াল ভল্ট নিরাপত্তা:</h4>
             <p className="text-slate-400 text-[11px] leading-relaxed">
-              ক্লায়েন্টদের জিমেইল ও ডাটাবেজ পাসওয়ার্ড সুরক্ষার জন্য <code>ENCRYPTION_SECRET</code> হিসেবে ৩২ অক্ষরের একটি গোপন চাবি দিন। এটি AES-256 এলগরিদমে আপনার সমস্ত পাসওয়ার্ড এনক্রিপ্ট রাখবে।
+              ক্লায়েন্টদের জিমেইল ও ডাটাবেজ পাসওয়ার্ড সুরক্ষার জন্য <code className="text-slate-300">ENCRYPTION_SECRET</code> হিসেবে ৩২ অক্ষরের একটি গোপন চাবি ব্যবহার করা হচ্ছে, যা AES-256-GCM মোডে সম্পূর্ণ সুরক্ষিত।
             </p>
           </div>
         </div>

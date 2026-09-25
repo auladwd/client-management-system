@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Client } from "@/models/Client";
+import { CredentialVault } from "@/models/CredentialVault";
+import { Payment } from "@/models/Payment";
+import { MaintenanceLog } from "@/models/MaintenanceLog";
 import { store } from "@/lib/store";
 
 export async function GET(
@@ -71,10 +74,16 @@ export async function DELETE(
 
     if (mongoose) {
       await Client.findByIdAndDelete(id);
+      await CredentialVault.deleteMany({ clientId: id });
+      await Payment.deleteMany({ clientId: id });
+      await MaintenanceLog.deleteMany({ clientId: id });
       return NextResponse.json({ success: true, message: "Client deleted" });
     }
 
     store.clients = store.clients.filter((c) => c._id !== id);
+    store.vaults = store.vaults.filter((v) => v.clientId !== id);
+    store.payments = store.payments.filter((p) => p.clientId !== id);
+    store.maintenance = store.maintenance.filter((m) => m.clientId !== id);
     return NextResponse.json({ success: true, message: "Client deleted" });
   } catch (error) {
     console.error("DELETE /api/clients/[id] error:", error);

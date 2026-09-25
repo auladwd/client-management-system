@@ -12,7 +12,9 @@ import {
   Download,
   AlertTriangle,
   ExternalLink,
+  Plus,
 } from "lucide-react";
+import ClientModal from "@/components/ClientModal";
 
 interface VaultItem {
   _id: string;
@@ -44,6 +46,7 @@ export default function VaultPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [revealedAll, setRevealedAll] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [newClientModalOpen, setNewClientModalOpen] = useState(false);
 
   useEffect(() => {
     fetchVaults();
@@ -126,7 +129,15 @@ VERCEL_PROJECT_ID="${d.vercelProjectId || ""}"
             className="flex items-center gap-1.5 rounded-xl border border-slate-700 bg-slate-900 px-3.5 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800 transition"
           >
             {revealedAll ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-            <span>{revealedAll ? "পাসওয়ার্ড লুকান (Mask All)" : "পাসওয়ার্ড দেখুন (Reveal All)"}</span>
+            <span>{revealedAll ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখুন"}</span>
+          </button>
+
+          <button
+            onClick={() => setNewClientModalOpen(true)}
+            className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-3.5 py-2 text-xs font-semibold text-white shadow-lg shadow-emerald-500/20 hover:opacity-90 transition active:scale-95"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            <span>নতুন ক্লায়েন্ট ও ভল্ট যুক্ত করুন</span>
           </button>
         </div>
       </div>
@@ -305,6 +316,12 @@ VERCEL_PROJECT_ID="${d.vercelProjectId || ""}"
           })}
         </div>
       )}
+      {/* Client & Vault Modal */}
+      <ClientModal
+        isOpen={newClientModalOpen}
+        onClose={() => setNewClientModalOpen(false)}
+        onSuccess={fetchVaults}
+      />
     </div>
   );
 }

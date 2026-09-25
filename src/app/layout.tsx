@@ -21,8 +21,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="bn" className="dark h-full antialiased">
-      <body className={`${hindSiliguri.variable} font-sans min-h-full flex flex-col bg-slate-950 text-slate-100`}>
+    <html lang="bn" className="dark h-full antialiased" suppressHydrationWarning>
+      <body
+        className={`${hindSiliguri.variable} font-sans min-h-full flex flex-col bg-slate-950 text-slate-100`}
+        suppressHydrationWarning
+      >
         <AppShell>{children}</AppShell>
       </body>
     </html>
