@@ -85,7 +85,7 @@ export default function InvoiceModal({
                   : "bg-rose-500/20 text-rose-400 border border-rose-500/30"
               }`}
             >
-              {payment.status === "paid" ? "পরিশোধিত (PAID)" : payment.status === "partial" ? "আংশিক বকেয়া (PARTIAL)" : "অপরিশোধিত (DUE)"}
+              {payment.status === "paid" ? "পরিশোধিত" : payment.status === "partial" ? "আংশিক বকেয়া" : "অপরিশোধিত"}
             </span>
           </div>
 
@@ -124,11 +124,10 @@ export default function InvoiceModal({
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
               <div>
-                <label className="text-[10px] text-slate-400">টাকার পরিমাণ (BDT) *</label>
+                <label className="text-[10px] text-slate-400">টাকার পরিমাণ *</label>
                 <input
                   type="number"
                   required
-                  placeholder="যেমন: 5000"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   className="w-full rounded-lg border border-slate-800 bg-slate-900 px-2.5 py-1.5 text-xs text-white"
@@ -149,10 +148,9 @@ export default function InvoiceModal({
                 </select>
               </div>
               <div>
-                <label className="text-[10px] text-slate-400">ট্রানজেকশন আইডি (TrxID)</label>
+                <label className="text-[10px] text-slate-400">ট্রানজেকশন আইডি</label>
                 <input
                   type="text"
-                  placeholder="9K8L2M3N4P"
                   value={trxId}
                   onChange={(e) => setTrxId(e.target.value)}
                   className="w-full rounded-lg border border-slate-800 bg-slate-900 px-2.5 py-1.5 text-xs font-mono text-white"
@@ -162,7 +160,6 @@ export default function InvoiceModal({
                 <label className="text-[10px] text-slate-400">নোট</label>
                 <input
                   type="text"
-                  placeholder="২য় কিস্তি"
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   className="w-full rounded-lg border border-slate-800 bg-slate-900 px-2.5 py-1.5 text-xs text-white"
@@ -233,7 +230,7 @@ export default function InvoiceModal({
           {/* Client Details */}
           <div className="mt-6 rounded-xl bg-slate-900/60 p-4 border border-slate-800/80">
             <h3 className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
-              ক্লায়েন্ট / বিল টু (Bill To)
+              বিল প্রাপক / ক্লায়েন্ট
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               <div>
@@ -251,9 +248,9 @@ export default function InvoiceModal({
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="border-b border-slate-800 text-slate-400 uppercase tracking-wider text-[11px]">
-                  <th className="py-2.5 px-3">বিবরণ (Service Description)</th>
+                  <th className="py-2.5 px-3">সেবা / কাজের বিবরণ</th>
                   <th className="py-2.5 px-3 text-center">পরিমাণ</th>
-                  <th className="py-2.5 px-3 text-right">মূল্য (BDT)</th>
+                  <th className="py-2.5 px-3 text-right">মূল্য (টাকা)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/60 text-slate-200">
@@ -278,7 +275,7 @@ export default function InvoiceModal({
             {/* Installments Breakdown */}
             <div className="w-full sm:w-1/2">
               <h4 className="text-xs font-bold text-slate-300 mb-2">
-                পরিশোধিত কিস্তির বিবরণ (Payment History)
+                পরিশোধিত কিস্তির বিবরণ
               </h4>
               {payment.installments && payment.installments.length > 0 ? (
                 <div className="space-y-1.5">

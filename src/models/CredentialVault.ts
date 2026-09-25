@@ -1,20 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
-
-export interface DecryptedCredentials {
-  gmailPassword?: string;
-  mongodbUri?: string;
-  mongodbUser?: string;
-  mongodbPassword?: string;
-  firebaseProjectId?: string;
-  firebaseApiKey?: string;
-  firebaseAuthDomain?: string;
-  cloudinaryCloudName?: string;
-  cloudinaryApiKey?: string;
-  cloudinaryApiSecret?: string;
-  vercelProjectId?: string;
-  vercelToken?: string;
-  notes?: string;
-}
+import { DecryptedCredentials } from "@/lib/env-helper";
+export type { DecryptedCredentials };
 
 export interface ICredentialVault extends Document {
   clientId: string;

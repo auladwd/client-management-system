@@ -151,28 +151,17 @@ export default function ClientsPage() {
               <option value="E-Commerce">E-Commerce</option>
               <option value="POS & Inventory">POS & Inventory</option>
               <option value="Hospital & Diagnostic">Hospital & Diagnostic</option>
-              <option value="Restaurant & Food">Restaurant & Food</option>
-              <option value="Custom Web App">Custom Web App</option>
-            </select>
-          </div>
-
-          <div>
-            <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-xs text-white focus:border-sky-500 focus:outline-none"
-            >
-              <option value="">সকল স্ট্যাটাস</option>
-              <option value="active">Active (লাইভ)</option>
-              <option value="in_progress">In Progress (চলমান)</option>
-              <option value="maintenance">Maintenance (মেইনটেন্যান্স)</option>
-              <option value="suspended">Suspended (স্থগিত)</option>
+                           <option value="">সকল স্ট্যাটাস</option>
+              <option value="active">লাইভ</option>
+              <option value="in_progress">চলমান</option>
+              <option value="maintenance">মেইনটেন্যান্স</option>
+              <option value="suspended">স্থগিত</option>
             </select>
           </div>
         </div>
       </div>
 
-      {/* Clients Grid */}
+      {/* Clients Row-based Table */}
       {loading ? (
         <div className="py-16 text-center text-xs text-slate-400">ক্লায়েন্ট তালিকা লোড হচ্ছে...</div>
       ) : filteredClients.length === 0 ? (
@@ -183,130 +172,158 @@ export default function ClientsPage() {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredClients.map((client) => {
-            const clientPayment = payments.find((p) => p.clientId === client._id);
-            return (
-              <div
-                key={client._id}
-                className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 backdrop-blur-xl hover:border-slate-700 transition flex flex-col justify-between space-y-4 shadow-lg"
-              >
-                <div className="space-y-3">
-                  {/* Top Bar */}
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <span
-                        className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-semibold mb-1.5 ${
-                          client.status === "active"
-                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                            : client.status === "in_progress"
-                            ? "bg-sky-500/10 text-sky-400 border border-sky-500/20"
-                            : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
-                        }`}
-                      >
-                        {client.status === "active" ? "লাইভ অ্যাপ" : client.status === "in_progress" ? "কাজ চলছে" : "মেইনটেন্যান্স"}
-                      </span>
-                      <h3 className="text-sm font-bold text-white leading-snug">
-                        {client.name}
-                      </h3>
-                      <p className="text-xs text-slate-400">{client.ownerName}</p>
-                    </div>
-
-                    <button
-                      onClick={() => handleDelete(client._id, client.name)}
-                      className="text-slate-400 hover:text-rose-400 p-1 transition"
-                      title="ডিলিট করুন"
+        <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/70 backdrop-blur-xl shadow-xl">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs text-slate-300">
+              <thead className="border-b border-slate-800 bg-slate-950/80 text-[11px] uppercase tracking-wider text-slate-400">
+                <tr>
+                  <th className="py-3.5 px-4 font-semibold">প্রতিষ্ঠান ও ক্লায়েন্ট</th>
+                  <th className="py-3.5 px-4 font-semibold">অ্যাপ ও স্ট্যাটাস</th>
+                  <th className="py-3.5 px-4 font-semibold">ঠিকানা ও যোগাযোগ</th>
+                  <th className="py-3.5 px-4 font-semibold">লাইভ লিংক ও ডোমেইন</th>
+                  <th className="py-3.5 px-4 font-semibold text-right">বিলিং ও পেমেন্ট</th>
+                  <th className="py-3.5 px-4 font-semibold text-center">অ্যাকশন</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800/60">
+                {filteredClients.map((client) => {
+                  const clientPayment = payments.find((p) => p.clientId === client._id);
+                  return (
+                    <tr
+                      key={client._id}
+                      className="hover:bg-slate-800/40 transition group"
                     >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
+                      {/* 1. Client & Owner */}
+                      <td className="py-3.5 px-4 align-top">
+                        <div className="space-y-0.5">
+                          <p className="font-bold text-white text-sm leading-tight group-hover:text-sky-300 transition">
+                            {client.name}
+                          </p>
+                          <p className="text-slate-400 text-xs">
+                            {client.ownerName}
+                          </p>
+                          {client.assignedRepCode && (
+                            <span className="inline-block mt-1 rounded bg-purple-500/10 px-1.5 py-0.5 text-[10px] font-mono text-purple-400 border border-purple-500/20">
+                              রেফ: {client.assignedRepCode}
+                            </span>
+                          )}
+                        </div>
+                      </td>
 
-                  {/* App Type & Location */}
-                  <div className="rounded-xl bg-slate-950 p-3 text-xs space-y-1.5 border border-slate-800/80">
-                    <div className="flex justify-between text-slate-400">
-                      <span>অ্যাপের ধরণ:</span>
-                      <span className="font-semibold text-slate-200">{client.appType}</span>
-                    </div>
-                    <div className="flex justify-between text-slate-400">
-                      <span>ঠিকানা:</span>
-                      <span className="text-slate-200">
-                        {client.upazila}, {client.district}
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-slate-400">
-                      <span>যোগাযোগ:</span>
-                      <span className="font-mono text-slate-300">{client.phone}</span>
-                    </div>
-                  </div>
+                      {/* 2. App Type & Status */}
+                      <td className="py-3.5 px-4 align-top whitespace-nowrap">
+                        <div className="space-y-1">
+                          <span
+                            className={`inline-block rounded-md px-2 py-0.5 text-[10px] font-semibold ${
+                              client.status === "active"
+                                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                                : client.status === "in_progress"
+                                ? "bg-sky-500/10 text-sky-400 border border-sky-500/20"
+                                : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
+                            }`}
+                          >
+                            {client.status === "active" ? "লাইভ অ্যাপ" : client.status === "in_progress" ? "কাজ চলছে" : "মেইনটেন্যান্স"}
+                          </span>
+                          <p className="text-[11px] text-slate-300 font-medium">
+                            {client.appType}
+                          </p>
+                        </div>
+                      </td>
 
-                  {/* URLs */}
-                  <div className="space-y-1.5 text-xs">
-                    <a
-                      href={client.vercelUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-between rounded-lg bg-sky-500/10 border border-sky-500/20 p-2 text-sky-300 hover:bg-sky-500/20 transition"
-                    >
-                      <span className="truncate max-w-[200px] text-[11px] font-mono">
-                        {client.vercelUrl}
-                      </span>
-                      <ExternalLink className="h-3 w-3 shrink-0" />
-                    </a>
+                      {/* 3. Location & Phone */}
+                      <td className="py-3.5 px-4 align-top whitespace-nowrap">
+                        <div className="space-y-0.5">
+                          <p className="text-slate-200">
+                            📍 {client.upazila}, {client.district}
+                          </p>
+                          <p className="font-mono text-slate-400 text-[11px]">
+                            📞 {client.phone}
+                          </p>
+                        </div>
+                      </td>
 
-                    {client.customDomain && (
-                      <a
-                        href={client.customDomain}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-between rounded-lg bg-indigo-500/10 border border-indigo-500/20 p-2 text-indigo-300 hover:bg-indigo-500/20 transition"
-                      >
-                        <span className="truncate max-w-[200px] text-[11px] font-mono flex items-center gap-1">
-                          <Globe className="h-3 w-3" /> {client.customDomain}
-                        </span>
-                        <ExternalLink className="h-3 w-3 shrink-0" />
-                      </a>
-                    )}
-                  </div>
-                </div>
+                      {/* 4. Live Links */}
+                      <td className="py-3.5 px-4 align-top">
+                        <div className="space-y-1 max-w-[220px]">
+                          <a
+                            href={client.vercelUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 text-[11px] font-mono text-sky-400 hover:text-sky-300 hover:underline truncate max-w-full"
+                            title={client.vercelUrl}
+                          >
+                            <ExternalLink className="h-3 w-3 shrink-0" />
+                            <span className="truncate">{client.vercelUrl.replace("https://", "")}</span>
+                          </a>
+                          {client.customDomain && (
+                            <a
+                              href={client.customDomain}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-[11px] font-mono text-indigo-400 hover:text-indigo-300 hover:underline truncate max-w-full block"
+                              title={client.customDomain}
+                            >
+                              <Globe className="h-3 w-3 shrink-0" />
+                              <span className="truncate">{client.customDomain.replace("https://", "")}</span>
+                            </a>
+                          )}
+                        </div>
+                      </td>
 
-                {/* Bottom Action Footer */}
-                <div className="pt-3 border-t border-slate-800/80 space-y-2.5">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-slate-400">
-                      পরিশোধিত: <strong className="text-emerald-400">৳{clientPayment?.paidAmount || 0}</strong>
-                    </span>
-                    <span className="text-slate-400">
-                      বকেয়া:{" "}
-                      <strong className={clientPayment?.dueAmount ? "text-rose-400" : "text-slate-400"}>
-                        ৳{clientPayment?.dueAmount || 0}
-                      </strong>
-                    </span>
-                  </div>
+                      {/* 5. Billing */}
+                      <td className="py-3.5 px-4 align-top text-right whitespace-nowrap">
+                        <div className="space-y-0.5">
+                          <p className="text-slate-300 text-[11px]">
+                            পরিশোধিত: <strong className="text-emerald-400">৳{clientPayment?.paidAmount || 0}</strong>
+                          </p>
+                          <p className="text-slate-400 text-[11px]">
+                            বকেয়া:{" "}
+                            <strong className={clientPayment?.dueAmount ? "text-rose-400" : "text-slate-400"}>
+                              ৳{clientPayment?.dueAmount || 0}
+                            </strong>
+                          </p>
+                        </div>
+                      </td>
 
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <button
-                      onClick={() => setVaultTarget({ id: client._id, name: client.name })}
-                      className="flex items-center justify-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 font-semibold text-emerald-400 hover:bg-emerald-500/20 transition"
-                    >
-                      <KeyRound className="h-3.5 w-3.5" />
-                      <span>ভল্ট (AES)</span>
-                    </button>
+                      {/* 6. Actions */}
+                      <td className="py-3.5 px-4 align-top text-center whitespace-nowrap">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <button
+                            onClick={() => setVaultTarget({ id: client._id, name: client.name })}
+                            className="flex items-center gap-1 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1.5 text-xs font-semibold text-emerald-400 hover:bg-emerald-500/20 transition"
+                            title="সিকিউর ভল্ট দেখুন ও এডিট করুন"
+                          >
+                            <KeyRound className="h-3.5 w-3.5" />
+                            <span>ভল্ট</span>
+                          </button>
 
-                    <button
-                      onClick={() => {
-                        const pay = payments.find((p) => p.clientId === client._id);
-                        if (pay) setInvoiceTarget(pay);
-                      }}
-                      className="flex items-center justify-center gap-1.5 rounded-xl border border-purple-500/30 bg-purple-500/10 px-3 py-2 font-semibold text-purple-300 hover:bg-purple-500/20 transition"
-                    >
-                      <CreditCard className="h-3.5 w-3.5" />
-                      <span>ইনভয়েস</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+                          <button
+                            onClick={() => {
+                              const pay = payments.find((p) => p.clientId === client._id);
+                              if (pay) setInvoiceTarget(pay);
+                            }}
+                            className="flex items-center gap-1 rounded-lg border border-purple-500/30 bg-purple-500/10 px-2.5 py-1.5 text-xs font-semibold text-purple-300 hover:bg-purple-500/20 transition"
+                            title="ইনভয়েস ও কিস্তি পেমেন্ট"
+                          >
+                            <CreditCard className="h-3.5 w-3.5" />
+                            <span>ইনভয়েস</span>
+                          </button>
+
+                          <button
+                            onClick={() => handleDelete(client._id, client.name)}
+                            className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-500/10 hover:text-rose-400 transition"
+                            title="মুছে ফেলুন"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 

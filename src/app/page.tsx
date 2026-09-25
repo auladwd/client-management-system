@@ -342,7 +342,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <h3 className="text-sm font-bold text-white flex items-center gap-2">
               <Wrench className="h-4 w-4 text-amber-400" />
-              সাপোর্ট ও সমাধান লগ (Maintenance History)
+              সাপোর্ট ও সমাধান লগ
             </h3>
             <Link
               href="/maintenance"

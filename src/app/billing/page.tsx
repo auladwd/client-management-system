@@ -78,13 +78,13 @@ export default function BillingPage() {
         </div>
 
         <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-5 backdrop-blur-xl">
-          <p className="text-xs font-medium text-emerald-400">মোট পরিশোধিত অর্থ (Paid)</p>
+          <p className="text-xs font-medium text-emerald-400">মোট পরিশোধিত অর্থ</p>
           <p className="text-2xl font-bold text-emerald-400 mt-1">৳{totalPaid.toLocaleString()}</p>
           <p className="text-[11px] text-emerald-300/80 mt-1">আদায়কৃত ক্যাশ/বিকাশ/ব্যাংক পেমেন্ট</p>
         </div>
 
         <div className="rounded-2xl border border-rose-500/20 bg-rose-500/10 p-5 backdrop-blur-xl">
-          <p className="text-xs font-medium text-rose-400">অবশিষ্ট বকেয়া (Total Due)</p>
+          <p className="text-xs font-medium text-rose-400">অবশিষ্ট বকেয়া</p>
           <p className="text-2xl font-bold text-rose-400 mt-1">৳{totalDue.toLocaleString()}</p>
           <p className="text-[11px] text-rose-300/80 mt-1">গ্রাহকদের কাছে পাওনা অর্থ</p>
         </div>
@@ -111,9 +111,9 @@ export default function BillingPage() {
               className="w-full rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-xs text-white focus:border-purple-500 focus:outline-none"
             >
               <option value="">সকল পেমেন্ট স্ট্যাটাস</option>
-              <option value="paid">পরিশোধিত (Paid)</option>
-              <option value="partial">আংশিক বকেয়া (Partial)</option>
-              <option value="unpaid">সম্পূর্ণ বকেয়া (Unpaid)</option>
+              <option value="paid">পরিশোধিত</option>
+              <option value="partial">আংশিক বকেয়া</option>
+              <option value="unpaid">সম্পূর্ণ বকেয়া</option>
             </select>
           </div>
         </div>

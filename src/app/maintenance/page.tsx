@@ -101,9 +101,9 @@ export default function MaintenancePage() {
               className="w-full rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-xs text-white focus:border-amber-500 focus:outline-none"
             >
               <option value="">সকল স্ট্যাটাস</option>
-              <option value="pending">অপেক্ষমান (Pending)</option>
-              <option value="in_progress">চলমান (In Progress)</option>
-              <option value="resolved">সমাধান হয়েছে (Resolved)</option>
+              <option value="pending">অপেক্ষমান</option>
+              <option value="in_progress">চলমান</option>
+              <option value="resolved">সমাধান হয়েছে</option>
             </select>
           </div>
         </div>
@@ -188,7 +188,7 @@ export default function MaintenancePage() {
                   <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-xs space-y-1">
                     <p className="font-bold text-emerald-400 flex items-center gap-1.5">
                       <BookOpen className="h-3.5 w-3.5" />
-                      কীভাবে সমাধান করা হলো (Solution Knowledge Note):
+                      কীভাবে সমাধান করা হলো:
                     </p>
                     <p className="text-slate-200 leading-relaxed font-sans">{t.solutionNotes}</p>
                   </div>

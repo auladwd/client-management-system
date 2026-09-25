@@ -154,7 +154,7 @@ WHATSAPP_API_TOKEN="optional_token"
                 {dbStatus?.status === "connected" ? (
                   <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-[11px] font-medium text-emerald-400">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                    সক্রিয় ও সংযুক্ত (Connected)
+                    সক্রিয় ও সংযুক্ত
                   </span>
                 ) : (
                   <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 border border-amber-500/30 px-2.5 py-0.5 text-[11px] font-medium text-amber-400">
@@ -211,7 +211,7 @@ WHATSAPP_API_TOKEN="optional_token"
               <p className="text-base font-bold text-emerald-400 mt-0.5">{dbStatus.collections.payments}</p>
             </div>
             <div className="rounded-xl bg-slate-950/70 border border-slate-800 p-2.5 text-center">
-              <p className="text-[10px] text-slate-400">প্রতিনিধি (Reps)</p>
+              <p className="text-[10px] text-slate-400">প্রতিনিধি</p>
               <p className="text-base font-bold text-purple-400 mt-0.5">{dbStatus.collections.representatives}</p>
             </div>
             <div className="rounded-xl bg-slate-950/70 border border-slate-800 p-2.5 text-center">

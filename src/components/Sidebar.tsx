@@ -22,15 +22,22 @@ interface SidebarProps {
   onClose?: () => void;
 }
 
-const NAV_ITEMS = [
-  { href: "/", label: "ড্যাশবোর্ড (Dashboard)", icon: LayoutDashboard },
-  { href: "/clients", label: "ক্লায়েন্ট ও প্রজেক্ট (Clients)", icon: Building2 },
-  { href: "/vault", label: "সিকিউর ভল্ট (Credential Vault)", icon: KeyRound, badge: "AES-256" },
-  { href: "/billing", label: "বিলিং ও পেমেন্ট (Billing)", icon: CreditCard },
-  { href: "/maintenance", label: "মেইনটেন্যান্স লগ (Tickets)", icon: Wrench },
-  { href: "/representatives", label: "প্রতিনিধি নেটওয়ার্ক (Reps)", icon: Users2, badge: "৬৪ জেলা" },
-  { href: "/broadcast", label: "ব্রডকাস্ট ও বার্তা (Broadcast)", icon: Megaphone },
-  { href: "/settings", label: "সেটিংস ও কনফিগ (Settings)", icon: Settings },
+interface NavItem {
+  href: string;
+  label: string;
+  icon: any;
+  badge?: string;
+}
+
+const NAV_ITEMS: NavItem[] = [
+  { href: "/", label: "ড্যাশবোর্ড", icon: LayoutDashboard },
+  { href: "/clients", label: "ক্লায়েন্ট ও প্রজেক্ট", icon: Building2 },
+  { href: "/vault", label: "সিকিউর ভল্ট", icon: KeyRound},
+  { href: "/billing", label: "বিলিং ও পেমেন্ট", icon: CreditCard },
+  { href: "/maintenance", label: "মেইনটেন্যান্স লগ", icon: Wrench },
+  { href: "/representatives", label: "প্রতিনিধি নেটওয়ার্ক", icon: Users2},
+  { href: "/broadcast", label: "ব্রডকাস্ট ও বার্তা", icon: Megaphone },
+  { href: "/settings", label: "সেটিংস ও কনফিগ", icon: Settings },
 ];
 
 export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
@@ -47,9 +54,8 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
       )}
 
       <aside
-        className={`fixed top-0 left-0 z-50 h-screen w-72 flex flex-col justify-between border-r border-slate-800/80 bg-slate-950/95 backdrop-blur-xl transition-transform duration-300 lg:translate-x-0 ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed top-0 left-0 z-50 h-screen w-72 flex flex-col justify-between border-r border-slate-800/80 bg-slate-950/95 backdrop-blur-xl transition-transform duration-300 lg:translate-x-0 ${isOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex flex-col h-full overflow-y-auto">
           {/* Brand Header */}
@@ -101,19 +107,17 @@ export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
                   key={item.href}
                   href={item.href}
                   onClick={onClose}
-                  className={`group flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                    isActive
+                  className={`group flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${isActive
                       ? "bg-gradient-to-r from-sky-500/20 via-indigo-500/20 to-purple-500/10 text-sky-400 border border-sky-500/30 shadow-md shadow-sky-500/10"
                       : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/60"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-3">
                     <Icon
-                      className={`h-4 w-4 transition-colors ${
-                        isActive
+                      className={`h-4 w-4 transition-colors ${isActive
                           ? "text-sky-400"
                           : "text-slate-400 group-hover:text-slate-200"
-                      }`}
+                        }`}
                     />
                     <span className="truncate">{item.label}</span>
                   </div>

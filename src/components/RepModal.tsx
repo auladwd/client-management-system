@@ -104,7 +104,6 @@ export default function RepModal({ isOpen, onClose, onSuccess }: RepModalProps) 
               <input
                 type="text"
                 required
-                placeholder="যেমন: হাসান মাহমুদ"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-white"
@@ -115,7 +114,6 @@ export default function RepModal({ isOpen, onClose, onSuccess }: RepModalProps) 
               <input
                 type="tel"
                 required
-                placeholder="017xxxxxxxx"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 className="w-full rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-white"
@@ -128,7 +126,6 @@ export default function RepModal({ isOpen, onClose, onSuccess }: RepModalProps) 
               <label className="block text-slate-300 mb-1 font-medium">হোয়াটসঅ্যাপ নম্বর</label>
               <input
                 type="tel"
-                placeholder="88017xxxxxxxx"
                 value={whatsapp}
                 onChange={(e) => setWhatsapp(e.target.value)}
                 className="w-full rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-white"
@@ -138,7 +135,6 @@ export default function RepModal({ isOpen, onClose, onSuccess }: RepModalProps) 
               <label className="block text-slate-300 mb-1 font-medium">ইমেইল এড্রেস</label>
               <input
                 type="email"
-                placeholder="rep.email@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-white"
@@ -188,10 +184,9 @@ export default function RepModal({ isOpen, onClose, onSuccess }: RepModalProps) 
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-slate-300 mb-1 font-medium">জাতীয় পরিচয়পত্র (NID) নম্বর</label>
+              <label className="block text-slate-300 mb-1 font-medium">জাতীয় পরিচয়পত্র নম্বর</label>
               <input
                 type="text"
-                placeholder="199xxxxxxxxxx"
                 value={nidNumber}
                 onChange={(e) => setNidNumber(e.target.value)}
                 className="w-full rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-white"
@@ -214,7 +209,6 @@ export default function RepModal({ isOpen, onClose, onSuccess }: RepModalProps) 
             </label>
             <input
               type="text"
-              placeholder="যেমন: bKash Personal 017xxxxxxxx অথবা ব্যাংক একাউন্ট নম্বর"
               value={payoutMethod}
               onChange={(e) => setPayoutMethod(e.target.value)}
               className="w-full rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-white"

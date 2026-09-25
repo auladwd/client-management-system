@@ -144,7 +144,6 @@ export default function BroadcastModal({ isOpen, onClose, onSuccess }: Broadcast
               <input
                 type="text"
                 required
-                placeholder="যেমন: নতুন স্কুল ম্যানেজমেন্ট সফটওয়্যার বিক্রয়ে বিশেষ কমিশন ঘোষণা"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className="w-full rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-white text-sm"
@@ -156,7 +155,6 @@ export default function BroadcastModal({ isOpen, onClose, onSuccess }: Broadcast
               <textarea
                 rows={4}
                 required
-                placeholder="সম্মানিত প্রতিনিধিগণ, আপনাদের এলাকায় শিক্ষা প্রতিষ্ঠান বা ব্যবসায়িক দোকানে সরাসরি ডেমো প্রদর্শনের জন্য..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 className="w-full rounded-xl border border-slate-800 bg-slate-950 px-3 py-2 text-white text-sm"

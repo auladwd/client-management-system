@@ -133,7 +133,7 @@ export default function RepresentativesPage() {
         </div>
       </div>
 
-      {/* Reps Grid */}
+      {/* Reps Row-based Table */}
       {loading ? (
         <div className="py-16 text-center text-xs text-slate-400">প্রতিনিধি তালিকা লোড হচ্ছে...</div>
       ) : filteredReps.length === 0 ? (
@@ -142,81 +142,117 @@ export default function RepresentativesPage() {
           <p className="text-xs text-slate-400">উপরে বোতামে ক্লিক করে নতুন প্রতিনিধি যুক্ত করুন।</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredReps.map((rep) => {
-            const waUrl = `https://wa.me/${rep.whatsapp}?text=${encodeURIComponent(
-              `আসসালামু আলাইকুম ${rep.name} ভাই, Aulad IT Solution থেকে বলছি...`
-            )}`;
-            return (
-              <div
-                key={rep._id}
-                className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 backdrop-blur-xl hover:border-slate-700 transition flex flex-col justify-between space-y-4 shadow-lg"
-              >
-                <div className="space-y-3">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <span className="inline-block rounded-md bg-purple-500/10 px-2 py-0.5 text-[10px] font-bold text-purple-400 border border-purple-500/20 mb-1">
-                        কোড: {rep.repCode}
-                      </span>
-                      <h3 className="text-sm font-bold text-white leading-snug">{rep.name}</h3>
-                      <p className="text-xs text-slate-400">
-                        📍 {rep.upazila}, {rep.district} ({rep.division})
-                      </p>
-                    </div>
-
-                    <a
-                      href={waUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 rounded-xl bg-emerald-600/20 border border-emerald-500/30 px-2.5 py-1.5 text-xs font-semibold text-emerald-400 hover:bg-emerald-600/30 transition shrink-0"
-                      title="হোয়াটসঅ্যাপে চ্যাট করুন"
+        <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/70 backdrop-blur-xl shadow-xl">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs text-slate-300">
+              <thead className="border-b border-slate-800 bg-slate-950/80 text-[11px] uppercase tracking-wider text-slate-400">
+                <tr>
+                  <th className="py-3.5 px-4 font-semibold">প্রতিনিধির কোড ও নাম</th>
+                  <th className="py-3.5 px-4 font-semibold">এলাকা ও কর্মক্ষেত্র</th>
+                  <th className="py-3.5 px-4 font-semibold">যোগাযোগ ও NID</th>
+                  <th className="py-3.5 px-4 font-semibold">কমিশন ও পে-আউট মেথড</th>
+                  <th className="py-3.5 px-4 font-semibold text-right">বিক্রয় ও পাওনা</th>
+                  <th className="py-3.5 px-4 font-semibold text-center">যোগাযোগ</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800/60">
+                {filteredReps.map((rep) => {
+                  const waUrl = `https://wa.me/${rep.whatsapp}?text=${encodeURIComponent(
+                    `আসসালামু আলাইকুম ${rep.name} ভাই, Aulad IT Solution থেকে বলছি...`
+                  )}`;
+                  return (
+                    <tr
+                      key={rep._id}
+                      className="hover:bg-slate-800/40 transition group"
                     >
-                      <MessageSquare className="h-3.5 w-3.5" />
-                      <span>হোয়াটসঅ্যাপ</span>
-                    </a>
-                  </div>
+                      {/* 1. Code & Name */}
+                      <td className="py-3.5 px-4 align-top">
+                        <div className="space-y-1">
+                          <span className="inline-block rounded-md bg-purple-500/10 px-2 py-0.5 text-[10px] font-bold text-purple-400 border border-purple-500/20">
+                            কোড: {rep.repCode}
+                          </span>
+                          <p className="font-bold text-white text-sm leading-tight group-hover:text-purple-300 transition">
+                            {rep.name}
+                          </p>
+                        </div>
+                      </td>
 
-                  {/* Details Card */}
-                  <div className="rounded-xl bg-slate-950 p-3 text-xs space-y-1.5 border border-slate-800/80">
-                    <div className="flex justify-between text-slate-400">
-                      <span>মোবাইল:</span>
-                      <span className="font-mono text-slate-200">{rep.phone}</span>
-                    </div>
-                    {rep.nidNumber && (
-                      <div className="flex justify-between text-slate-400">
-                        <span>NID নম্বর:</span>
-                        <span className="font-mono text-slate-300">{rep.nidNumber}</span>
-                      </div>
-                    )}
-                    <div className="flex justify-between text-slate-400">
-                      <span>কমিশন রেট:</span>
-                      <span className="font-bold text-white">৳{rep.commissionValue} / সেল</span>
-                    </div>
-                  </div>
+                      {/* 2. Area */}
+                      <td className="py-3.5 px-4 align-top whitespace-nowrap">
+                        <div className="space-y-0.5">
+                          <p className="text-slate-200 font-medium">
+                            📍 {rep.upazila}, {rep.district}
+                          </p>
+                          <p className="text-[11px] text-slate-400">
+                            বিভাগ: {rep.division}
+                          </p>
+                        </div>
+                      </td>
 
-                  {/* Financial & Performance */}
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="rounded-xl bg-slate-950/60 p-2.5 border border-slate-800 text-center">
-                      <p className="text-[10px] text-slate-400">মোট বিক্রয় (Sales)</p>
-                      <p className="text-base font-bold text-white mt-0.5">{rep.totalSalesCount} টি</p>
-                    </div>
-                    <div className="rounded-xl bg-slate-950/60 p-2.5 border border-slate-800 text-center">
-                      <p className="text-[10px] text-slate-400">কমিশন পাওনা (Due)</p>
-                      <p className="text-base font-bold text-emerald-400 mt-0.5">৳{rep.commissionDue}</p>
-                    </div>
-                  </div>
-                </div>
+                      {/* 3. Contact & NID */}
+                      <td className="py-3.5 px-4 align-top whitespace-nowrap">
+                        <div className="space-y-0.5">
+                          <p className="font-mono text-slate-200">
+                            📞 {rep.phone}
+                          </p>
+                          {rep.email && (
+                            <p className="text-slate-400 text-[11px] truncate max-w-[160px]">
+                              ✉️ {rep.email}
+                            </p>
+                          )}
+                          {rep.nidNumber && (
+                            <p className="text-slate-400 font-mono text-[10px]">
+                              NID: {rep.nidNumber}
+                            </p>
+                          )}
+                        </div>
+                      </td>
 
-                {/* Payout Details Footer */}
-                {rep.payoutMethod && (
-                  <div className="pt-2 border-t border-slate-800/80 text-[11px] text-slate-400 flex items-center justify-between">
-                    <span>পে-আউট মেথড:</span>
-                    <span className="font-medium text-slate-200">{rep.payoutMethod}</span>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                      {/* 4. Commission Rate & Payout Method */}
+                      <td className="py-3.5 px-4 align-top">
+                        <div className="space-y-1">
+                          <span className="inline-block font-semibold text-white bg-slate-950 px-2 py-0.5 rounded border border-slate-800 text-[11px]">
+                            ৳{rep.commissionValue} / সেল
+                          </span>
+                          {rep.payoutMethod && (
+                            <p className="text-[11px] text-slate-300 leading-tight">
+                              পদ্ধতি: <span className="text-slate-400">{rep.payoutMethod}</span>
+                            </p>
+                          )}
+                        </div>
+                      </td>
+
+                      {/* 5. Sales & Commission Due */}
+                      <td className="py-3.5 px-4 align-top text-right whitespace-nowrap">
+                        <div className="space-y-0.5">
+                          <p className="text-slate-300 text-[11px]">
+                            মোট বিক্রয়: <strong className="text-white font-bold">{rep.totalSalesCount} টি</strong>
+                          </p>
+                          <p className="text-slate-400 text-[11px]">
+                            কমিশন পাওনা: <strong className="text-emerald-400 font-bold">৳{rep.commissionDue}</strong>
+                          </p>
+                        </div>
+                      </td>
+
+                      {/* 6. WhatsApp Action */}
+                      <td className="py-3.5 px-4 align-top text-center whitespace-nowrap">
+                        <a
+                          href={waUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600/20 border border-emerald-500/30 px-3 py-1.5 text-xs font-semibold text-emerald-400 hover:bg-emerald-600/30 transition shadow-sm"
+                          title="হোয়াটসঅ্যাপে চ্যাট করুন"
+                        >
+                          <MessageSquare className="h-3.5 w-3.5" />
+                          <span>হোয়াটসঅ্যাপ</span>
+                        </a>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
