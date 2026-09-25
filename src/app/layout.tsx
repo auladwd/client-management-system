@@ -13,6 +13,13 @@ const hindSiliguri = Hind_Siliguri({
 export const metadata: Metadata = {
   title: "Aulad IT Solution - Client & Operations Management Portal",
   description: "Comprehensive management system for clients, encrypted credentials vault, billing, maintenance history, and representative network.",
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({
